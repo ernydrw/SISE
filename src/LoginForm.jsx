@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function LoginForm() {
+export function LoginForm({ onLoginSuccess }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -17,7 +17,7 @@ export function LoginForm() {
     }));
   };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -46,8 +46,12 @@ const handleSubmit = async (e) => {
         throw new Error(data.message || data.error || 'Credenciales inválidas');
       }
 
-      alert(`¡Login exitoso! Bienvenido ${data.user?.nombre || data.user?.email}`);
       console.log('Respuesta del servidor:', data);
+
+      // Notificamos a App.jsx que el login fue exitoso para abrir el Dashboard
+      if (onLoginSuccess) {
+        onLoginSuccess(data.user);
+      }
 
     } catch (err) {
       setError(err.message);
